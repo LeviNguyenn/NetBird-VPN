@@ -79,7 +79,5 @@ This repository contains the complete documentation suite for B3 Networks NetBir
   - Levi Nguyen (levinguyen@b3networks.com)
   - Luk Huynh (luk@b3networks.com)
 - DevOps
-  - Hieu Dao
-  - Sang Ngo
-  - Vinh Dang
   - Huy Nguyen
+  - Hieu Dao

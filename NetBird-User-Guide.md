@@ -177,7 +177,5 @@ netbird down; netbird up
   - Levi Nguyen (levinguyen@b3networks.com)
   - Luk Huynh (luk@b3networks.com)
 - DevOps
-  - Hieu Dao
-  - Sang Ngo
-  - Vinh Dang
   - Huy Nguyen
+  - Hieu Dao

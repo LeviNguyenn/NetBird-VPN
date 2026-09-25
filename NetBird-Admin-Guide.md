@@ -200,7 +200,5 @@ sudo iptables -t nat -L NETBIRD-RT-NAT -n -v
   - Levi Nguyen (levinguyen@b3networks.com)
   - Luk Huynh (luk@b3networks.com)
 - DevOps
-  - Hieu Dao
-  - Sang Ngo
-  - Vinh Dang
   - Huy Nguyen
+  - Hieu Dao
