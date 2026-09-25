@@ -136,15 +136,15 @@ ssh ec2-user@172.21.134.27
 cd /home/ec2-user
 docker compose stop netbird-server
 
-# 2. Restore SQLite or PostgreSQL database
-# (If SQLite):
-cp /home/ec2-user/backups/<BACKUP_FILE>.db /var/lib/netbird/store.db
-
-# (If PostgreSQL):
+# 2. Re-create public schema and restore PostgreSQL database from SQL dump
+docker exec netbird-postgres psql -U netbird -d netbird -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 docker exec -i netbird-postgres psql -U netbird netbird < /home/ec2-user/backups/<BACKUP_FILE>.sql
 
 # 3. Restart management service
 docker compose start netbird-server
+
+# 4. Verify peers and users count
+docker exec netbird-postgres psql -U netbird -d netbird -c "SELECT COUNT(*) FROM peers; SELECT COUNT(*) FROM groups; SELECT COUNT(*) FROM users;"
 ```
 
 ---
