@@ -45,7 +45,7 @@ This repository contains the complete documentation suite for B3 Networks NetBir
 
 | Component | Instance ID | Private IP | Public IP | Function |
 |---|---|---|---|---|
-| **Management + Signal** | `i-0ebee8d9ae0102850` | `172.21.134.27` | `13.250.164.169` | Dashboard UI, Signal coordinator, SQLite store, Traefik SSL termination (`netbird.b3networks.com`). |
+| **Management + Signal** | `i-0ebee8d9ae0102850` | `172.21.134.27` | `13.250.164.169` | Dashboard UI, Signal coordinator, PostgreSQL 16 store, Traefik SSL termination (`netbird.b3networks.com`). |
 | **Relay Server** | `i-09b9ff45ef4ed866f` | `172.21.130.196` | `18.136.115.100` | Fallback WebSocket TCP 443 relay & STUN UDP 3478 (`relay.netbird.b3networks.com`). |
 
 ### 3.2 Routing Peers (Gateways)
