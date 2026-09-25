@@ -201,6 +201,56 @@ services:
 
 ---
 
+### 4.4 Database & Automated Backup System (On-Call DevOps Runbook)
+
+When the primary administrator is on leave or out-of-office, DevOps team members on-call can verify and manage the NetBird database backups using the following instructions.
+
+#### 1. Backup Specifications
+* **Database Engine:** PostgreSQL 16 (`netbird-postgres`)
+* **Schedule:** Daily at **02:00 AM** (Cron: `0 2 * * *`)
+* **Retention Policy:** **7 days** (automated cleanup via `find ... -mtime +7 -delete`)
+* **Backup Destination:** `/home/ec2-user/backups/`
+* **Log Location:** `/var/log/netbird-backup.log`
+* **File Naming Format:** `netbird_YYYYMMDD_HHMMSS.sql` (average size: ~440KB - 630KB)
+
+#### 2. Backup Script Reference (`/home/ec2-user/backup-netbird.sh`)
+
+```bash
+#!/bin/bash
+DATE=$(date +%Y%m%d_%H%M%S)
+BACKUP_DIR="/home/ec2-user/backups"
+mkdir -p $BACKUP_DIR
+
+# Backup PostgreSQL
+docker exec netbird-postgres pg_dump -U netbird netbird > $BACKUP_DIR/netbird_$DATE.sql
+
+# Keep only last 7 days
+find $BACKUP_DIR -name "*.sql" -mtime +7 -delete
+
+echo "Backup done: netbird_$DATE.sql"
+```
+
+#### 3. On-Call Quick Verification Checklist
+
+DevOps engineers can verify backup health in under 30 seconds:
+
+```bash
+# Step 1: Check if last night's backup ran successfully
+tail -n 10 /var/log/netbird-backup.log
+# Expected output: "Backup done: netbird_YYYYMMDD_02000X.sql"
+
+# Step 2: List current backup files and check file sizes (~400KB - 650KB)
+ls -lh /home/ec2-user/backups
+
+# Step 3: Trigger a manual backup (e.g. before major config or upgrade operations)
+/home/ec2-user/backup-netbird.sh
+
+# Step 4: Verify PostgreSQL database records without downtime
+docker exec -i netbird-postgres psql -U netbird -d netbird -c "SELECT COUNT(*) AS active_peers FROM peers; SELECT COUNT(*) AS total_users FROM users;"
+```
+
+---
+
 ## 5. Security Groups & Firewall Ports Reference
 
 To ensure connectivity and avoid troubleshooting delays, the following inbound rules must be configured in AWS Security Groups and GCP Firewall:

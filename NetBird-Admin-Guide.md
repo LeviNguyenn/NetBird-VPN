@@ -118,15 +118,25 @@ When setting up a new EC2 or GCP VM to act as a Routing Peer:
 ## 6. Backup & Restore Procedures
 
 ### 6.1 Automated Backup Schedule
-- **Schedule:** Automated daily backup via cron at **02:00 VNT** on the Management EC2 (`172.21.134.27`).
-- **Retention Period:** 7 days.
+- **Schedule:** Automated daily backup via cron at **02:00 AM** (`0 2 * * *`) on the Management EC2 (`172.21.134.27`).
+- **Retention Period:** **7 days** (automated cleanup).
 - **Backup Directory:** `/home/ec2-user/backups/`.
-- **Database Dump Format:** `netbird_YYYYMMDD_HHMMSS.sql`.
+- **Log Location:** `/var/log/netbird-backup.log`.
+- **Database Dump Format:** `netbird_YYYYMMDD_HHMMSS.sql` (average size: ~440KB - 630KB).
 
-### 6.2 Manual Backup
+### 6.2 On-Call Verification & Manual Backup
 ```bash
 # SSH into Management Server (172.21.134.27)
 ssh ec2-user@172.21.134.27
+
+# 1. Verify last night's backup ran successfully
+tail -n 10 /var/log/netbird-backup.log
+# Expected: "Backup done: netbird_YYYYMMDD_02000X.sql"
+
+# 2. Check existing backup files
+ls -lh /home/ec2-user/backups
+
+# 3. Trigger manual backup (before maintenance or upgrades)
 /home/ec2-user/backup-netbird.sh
 ```
 
